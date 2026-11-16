@@ -1,0 +1,213 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<title>E2E: RUNNING</title>
+<style>
+  body { font: 14px/1.4 ui-monospace, SFMono-Regular, Menlo, monospace; padding: 16px; }
+  iframe { width: 390px; height: 844px; border: 0; }
+  pre { white-space: pre-wrap; }
+</style>
+</head>
+<body>
+<iframe id="game" title="game under test"></iframe>
+<pre id="out">E2E: RUNNING</pre>
+<script>
+(function () {
+  var frame = document.getElementById('game');
+  var out = document.getElementById('out');
+  var checks = [];
+  var finished = false;
+
+  function finish(text) {
+    if (finished) return;
+    finished = true;
+    out.textContent = text;
+    document.title = text;
+  }
+
+  function assert(condition, message) {
+    if (!condition) throw new Error(message);
+    checks.push(message);
+  }
+
+  function one(doc, selector) {
+    var node = doc.querySelector(selector);
+    assert(node, 'missing ' + selector);
+    return node;
+  }
+
+  function all(doc, selector) {
+    return Array.prototype.slice.call(doc.querySelectorAll(selector));
+  }
+
+  function click(node) {
+    var win = node.ownerDocument.defaultView;
+    node.dispatchEvent(new win.MouseEvent('click', { bubbles: true, cancelable: true }));
+  }
+
+  function loadGame(search) {
+    return new Promise(function (resolve, reject) {
+      var timer = setTimeout(function () { reject(new Error('iframe load timeout')); }, 5000);
+      frame.onload = function () {
+        clearTimeout(timer);
+        try {
+          resolve(frame.contentWindow);
+        } catch (error) {
+          reject(error);
+        }
+      };
+      frame.onerror = function () {
+        clearTimeout(timer);
+        reject(new Error('iframe failed to load'));
+      };
+      frame.src = '../index.html' + search;
+    });
+  }
+
+  function currentQuestion(doc) {
+    return one(doc, '[data-testid="question"]');
+  }
+
+  function answerCorrect(doc, expectedScore) {
+    var options = all(doc, '[data-testid="option"]');
+    assert(options.length === 4, 'four era options');
+    var correct = options.filter(function (option) {
+      return option.getAttribute('data-correct') === 'true';
+    });
+    assert(correct.length === 1, 'exactly one correct option');
+    click(correct[0]);
+    var feedback = one(doc, '[data-testid="feedback"]');
+    assert(feedback.getAttribute('data-result') === 'correct', 'correct feedback shown');
+    assert(all(doc, '[data-testid="option"]').every(function (option) {
+      return option.disabled;
+    }), 'options are locked after answering');
+    assert(one(doc, '[data-testid="score-value"]').textContent.trim() === String(expectedScore),
+      'score is ' + expectedScore);
+    return correct[0];
+  }
+
+  function next(doc) {
+    click(one(doc, '[data-testid="next"]'));
+  }
+
+  async function run() {
+    var win = await loadGame('?seed=101');
+    var doc = win.document;
+
+    assert(one(doc, '[data-testid="start"]'), 'start button is visible');
+    assert(all(doc, '[data-mode]').length === 6, 'six topic modes are visible');
+    assert(one(doc, '[data-testid="best-start"]'), 'best score is visible');
+    click(one(doc, '[data-testid="start"]'));
+
+    var categoryCounts = {};
+    var eraCounts = {};
+    var prompts = {};
+
+    for (var i = 0; i < 10; i++) {
+      var question = currentQuestion(doc);
+      var category = question.getAttribute('data-category');
+      var era = question.getAttribute('data-era');
+      assert(category && era, 'question ' + (i + 1) + ' has category and era');
+      assert(one(doc, '[data-testid="prompt"]').textContent.trim().length > 0,
+        'question ' + (i + 1) + ' has a prompt');
+      var prompt = one(doc, '[data-testid="prompt"]').textContent.trim();
+      assert(!prompts[prompt], 'question ' + (i + 1) + ' is not a duplicate');
+      prompts[prompt] = true;
+      categoryCounts[category] = (categoryCounts[category] || 0) + 1;
+      eraCounts[era] = (eraCounts[era] || 0) + 1;
+      answerCorrect(doc, i + 1);
+      next(doc);
+    }
+
+    assert(one(doc, '[data-testid="result"]'), 'result screen is shown');
+    assert(one(doc, '[data-testid="score"]').textContent.trim() === '10', 'final score is 10');
+    assert(Object.keys(categoryCounts).length === 5, 'all five topics appeared');
+    assert(Object.keys(categoryCounts).every(function (key) {
+      return categoryCounts[key] === 2;
+    }), 'mixed mode shows two questions per topic');
+    assert(Object.keys(eraCounts).every(function (key) {
+      return eraCounts[key] <= 2;
+    }), 'mixed mode shows at most two questions per era');
+
+    var stored = JSON.parse(win.localStorage.getItem('ugadai-epohu:best:v1') || '{}');
+    assert(stored.mixed === 10, 'best score is saved to localStorage');
+
+    click(one(doc, '[data-testid="restart"]'));
+    assert(one(doc, '[data-testid="question"]'), 'restart starts a new round');
+    assert(one(doc, '[data-testid="score-value"]').textContent.trim() === '0',
+      'restart resets the score');
+
+    var win2 = await loadGame('?seed=202');
+    var doc2 = win2.document;
+    assert(one(doc2, '[data-testid="best-start"]').textContent.indexOf('10/10') !== -1,
+      'saved best score survives a reload');
+    click(one(doc2, '[data-testid="start"]'));
+    var options = all(doc2, '[data-testid="option"]');
+    var wrong = options.filter(function (option) {
+      return option.getAttribute('data-correct') === 'false';
+    })[0];
+    assert(wrong, 'a wrong option is present');
+    var wrongEra = wrong.getAttribute('data-era');
+    click(wrong);
+    assert(one(doc2, '[data-testid="feedback"]').getAttribute('data-result') === 'wrong',
+      'wrong feedback shown');
+    assert(one(doc2, '[data-testid="score-value"]').textContent.trim() === '0',
+      'score does not grow for a wrong answer');
+    assert(one(doc2, '[data-testid="option"][data-correct="true"]').classList.contains('is-correct'),
+      'correct option is highlighted after a mistake');
+    assert(one(doc2, '[data-testid="option"][data-era="' + wrongEra + '"]').classList.contains('is-wrong'),
+      'selected wrong option is highlighted');
+    next(doc2);
+
+    var win3 = await loadGame('?seed=303');
+    var doc3 = win3.document;
+    click(one(doc3, '[data-mode="cinema"]'));
+    assert(one(doc3, '[data-mode="cinema"]').getAttribute('aria-pressed') === 'true',
+      'cinema mode is selected');
+    click(one(doc3, '[data-testid="start"]'));
+    for (var j = 0; j < 10; j++) {
+      assert(currentQuestion(doc3).getAttribute('data-category') === 'cinema',
+        'cinema round only contains cinema questions');
+      answerCorrect(doc3, j + 1);
+      next(doc3);
+    }
+    assert(one(doc3, '[data-testid="score"]').textContent.trim() === '10',
+      'cinema round finishes with 10/10');
+    assert(one(doc3, '[data-testid="share"]').getAttribute('href').indexOf('https://t.me/share/url?') === 0,
+      'share link points to Telegram');
+    click(one(doc3, '[data-testid="change-mode"]'));
+    assert(one(doc3, '[data-testid="start"]'), 'change topic returns to the start screen');
+
+    var win4 = await loadGame('?seed=404');
+    var doc4 = win4.document;
+    click(one(doc4, '[data-testid="start"]'));
+    var keyOptions = all(doc4, '[data-testid="option"]');
+    var correctIndex = keyOptions.findIndex(function (option) {
+      return option.getAttribute('data-correct') === 'true';
+    });
+    doc4.dispatchEvent(new win4.KeyboardEvent('keydown', {
+      key: String(correctIndex + 1),
+      bubbles: true,
+      cancelable: true
+    }));
+    assert(one(doc4, '[data-testid="feedback"]').getAttribute('data-result') === 'correct',
+      'number key answers the question');
+    doc4.dispatchEvent(new win4.KeyboardEvent('keydown', {
+      key: 'Enter',
+      bubbles: true,
+      cancelable: true
+    }));
+    assert(one(doc4, '[data-testid="progress-text"]').textContent.indexOf('2') !== -1,
+      'Enter moves to the next question');
+
+    finish('E2E: PASS ' + checks.length);
+  }
+
+  run().catch(function (error) {
+    finish('E2E: FAIL ' + (error && error.message ? error.message : String(error)));
+  });
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,1608 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#070b14">
+<meta name="description" content="Викторина «Угадай эпоху!»: технологии, кино, музыка, игры и события России 1980–2026.">
+<meta property="og:title" content="Угадай эпоху! — викторина 1980–2026">
+<meta property="og:description" content="10 вопросов о технологиях, кино, музыке, играх и событиях России. Проверь, насколько хорошо ты помнишь эпохи.">
+<meta property="og:type" content="website">
+<title>Угадай эпоху!</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%23070b14'/%3E%3Cpath d='M9 7h14M9 25h14M11 7c0 5 10 5 10 9s-10 4-10 9M21 7c0 5-10 5-10 9s10 4 10 9' stroke='%235eead4' stroke-width='2' fill='none'/%3E%3C/svg%3E">
+<style>
+    :root {
+      --bg: #070b14;
+      --panel: rgba(17, 25, 44, 0.78);
+      --line: rgba(255, 255, 255, 0.09);
+      --text: #f5f7ff;
+      --muted: #8d9bb5;
+      --accent: #5eead4;
+      --violet: #a78bfa;
+      --pink: #f472b6;
+      --ok: #34d399;
+      --bad: #fb7185;
+      --radius: 24px;
+      --font: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+      --mono: ui-monospace, SFMono-Regular, Menlo, Consolas, "Liberation Mono", monospace;
+    }
+    * { box-sizing: border-box; }
+    html { -webkit-text-size-adjust: 100%; }
+    body {
+      margin: 0;
+      min-height: 100vh;
+      min-height: 100dvh;
+      overflow-x: hidden;
+      background:
+        radial-gradient(900px 520px at 50% -10%, rgba(94, 234, 212, 0.13), transparent 62%),
+        radial-gradient(720px 520px at 108% 18%, rgba(167, 139, 250, 0.11), transparent 62%),
+        linear-gradient(180deg, #070b14 0%, #05070d 100%);
+      color: var(--text);
+      font-family: var(--font);
+      -webkit-font-smoothing: antialiased;
+      -webkit-tap-highlight-color: transparent;
+      touch-action: manipulation;
+      overscroll-behavior-y: contain;
+    }
+    body::before {
+      content: "";
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      opacity: 0.38;
+      background-image:
+        linear-gradient(rgba(255, 255, 255, 0.035) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255, 255, 255, 0.035) 1px, transparent 1px);
+      background-size: 44px 44px;
+      -webkit-mask-image: radial-gradient(ellipse at 50% 0%, #000 0%, transparent 72%);
+      mask-image: radial-gradient(ellipse at 50% 0%, #000 0%, transparent 72%);
+    }
+    button, a { -webkit-tap-highlight-color: transparent; }
+    button { touch-action: manipulation; }
+    .app {
+      position: relative;
+      z-index: 1;
+      width: 100%;
+      max-width: 480px;
+      min-height: 100vh;
+      min-height: 100dvh;
+      margin: 0 auto;
+      padding: 16px 18px 24px;
+      padding: max(16px, env(safe-area-inset-top)) 18px max(24px, env(safe-area-inset-bottom));
+      display: flex;
+      flex-direction: column;
+    }
+    .topbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      min-height: 32px;
+      margin-bottom: 18px;
+    }
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      min-width: 0;
+      color: var(--muted);
+      font-size: 11px;
+      font-weight: 800;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      white-space: nowrap;
+    }
+    .brand-icon { font-size: 17px; line-height: 1; }
+    .best-pill {
+      flex: none;
+      padding: 6px 9px;
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.03);
+      color: var(--muted);
+      font-size: 10px;
+      white-space: nowrap;
+    }
+    .best-pill b { color: var(--text); font-family: var(--mono); font-weight: 700; }
+    .start { flex: 1; display: flex; flex-direction: column; padding: 4px 0 18px; }
+    .hero { margin-top: auto; }
+    .kicker {
+      margin: 0 0 10px;
+      color: var(--accent);
+      font-size: 10px;
+      font-weight: 800;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+    }
+    h1 {
+      margin: 0 0 14px;
+      font-size: clamp(40px, 13vw, 54px);
+      font-weight: 850;
+      line-height: 0.92;
+      letter-spacing: -0.055em;
+    }
+    h1 .grad { color: var(--accent); }
+    @supports ((-webkit-background-clip: text) or (background-clip: text)) {
+      h1 .grad {
+        background: linear-gradient(90deg, #5eead4 0%, #a78bfa 58%, #f472b6 100%);
+        -webkit-background-clip: text;
+        background-clip: text;
+        color: transparent;
+      }
+    }
+    .lead {
+      max-width: 37ch;
+      margin: 0 0 16px;
+      color: var(--muted);
+      font-size: 14px;
+      line-height: 1.5;
+    }
+    .timeline {
+      position: relative;
+      display: grid;
+      grid-template-columns: repeat(6, 1fr);
+      margin: 14px 0 22px;
+    }
+    .timeline::before {
+      content: "";
+      position: absolute;
+      left: 3px;
+      right: 3px;
+      top: 4px;
+      height: 1px;
+      background: linear-gradient(90deg, rgba(94, 234, 212, 0.55), rgba(167, 139, 250, 0.5), rgba(244, 114, 182, 0.55));
+    }
+    .timeline span {
+      position: relative;
+      padding-top: 13px;
+      color: var(--muted);
+      font-family: var(--mono);
+      font-size: 9px;
+      text-align: center;
+      white-space: nowrap;
+    }
+    .timeline span::before {
+      content: "";
+      position: absolute;
+      top: 1px;
+      left: 50%;
+      width: 7px;
+      height: 7px;
+      border: 1px solid rgba(255, 255, 255, 0.42);
+      border-radius: 50%;
+      background: #0b1222;
+      transform: translateX(-50%);
+    }
+    .modes { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 18px; }
+    .chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      min-height: 44px;
+      max-width: 100%;
+      padding: 8px 12px;
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.035);
+      color: var(--muted);
+      font: inherit;
+      font-size: 12px;
+      font-weight: 650;
+      white-space: nowrap;
+      cursor: pointer;
+      transition: border-color 0.16s ease, background 0.16s ease, color 0.16s ease;
+    }
+    .chip .dot, .cat-chip .dot {
+      flex: none;
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: var(--accent);
+      box-shadow: 0 0 10px var(--accent);
+    }
+    .chip.is-active {
+      border-color: var(--accent);
+      background: rgba(255, 255, 255, 0.07);
+      color: var(--text);
+      box-shadow: inset 0 0 0 1px var(--accent);
+    }
+    .btn {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 9px;
+      width: 100%;
+      min-height: 58px;
+      padding: 0 20px;
+      border: 0;
+      border-radius: 17px;
+      background: linear-gradient(135deg, #5eead4 0%, #a78bfa 100%);
+      box-shadow: 0 12px 34px rgba(94, 234, 212, 0.18);
+      color: #071018;
+      font: inherit;
+      font-size: 16px;
+      font-weight: 850;
+      text-decoration: none;
+      cursor: pointer;
+      transition: transform 0.15s ease, filter 0.15s ease;
+      user-select: none;
+      -webkit-user-select: none;
+    }
+    .btn:active { transform: translateY(1px) scale(0.995); filter: brightness(1.04); }
+    .btn.secondary {
+      border: 1px solid var(--line);
+      background: rgba(255, 255, 255, 0.06);
+      box-shadow: none;
+      color: var(--text);
+    }
+    .btn.ghost {
+      min-height: 44px;
+      border: 0;
+      background: transparent;
+      box-shadow: none;
+      color: var(--muted);
+      font-size: 13px;
+    }
+    .hint { margin: 13px 0 auto; color: var(--muted); font-size: 10px; line-height: 1.5; text-align: center; }
+    .foot {
+      margin-top: auto;
+      padding-top: 16px;
+      color: rgba(141, 155, 181, 0.62);
+      font-size: 9px;
+      line-height: 1.5;
+      text-align: center;
+    }
+    .nojs {
+      max-width: 480px;
+      margin: 0 auto;
+      padding: 64px 24px;
+      color: var(--muted);
+      font-family: var(--font);
+      line-height: 1.6;
+      text-align: center;
+    }
+    .nojs-icon { font-size: 34px; }
+    .nojs h1 {
+      margin: 16px 0 10px;
+      color: var(--text);
+      font-size: 27px;
+      line-height: 1.1;
+      letter-spacing: -0.03em;
+    }
+    .nojs p { margin: 0 0 12px; font-size: 14px; }
+    .nojs a {
+      display: inline-block;
+      margin-top: 10px;
+      padding: 14px 18px;
+      border-radius: 14px;
+      background: linear-gradient(135deg, #5eead4, #a78bfa);
+      color: #071018;
+      font-weight: 800;
+      text-decoration: none;
+    }
+    .nojs-url {
+      color: var(--accent);
+      font-family: var(--mono);
+      font-size: 11px;
+      word-break: break-all;
+    }
+    .game, .result {
+      display: flex;
+      flex: 1;
+      flex-direction: column;
+      padding: 17px;
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      background: linear-gradient(180deg, rgba(19, 27, 46, 0.8) 0%, rgba(9, 14, 26, 0.68) 100%);
+      box-shadow: 0 28px 80px rgba(0, 0, 0, 0.42);
+    }
+    .game-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      margin-bottom: 10px;
+    }
+    .qcount { color: var(--muted); font-family: var(--mono); font-size: 10px; letter-spacing: 0.04em; }
+    .score-pill {
+      flex: none;
+      padding: 5px 8px;
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      color: var(--muted);
+      font-size: 10px;
+      white-space: nowrap;
+    }
+    .score-pill b { color: var(--text); font-family: var(--mono); }
+    .progress {
+      height: 5px;
+      margin-bottom: 16px;
+      overflow: hidden;
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.07);
+    }
+    .progress > span {
+      display: block;
+      height: 100%;
+      border-radius: inherit;
+      background: linear-gradient(90deg, var(--accent), var(--violet));
+      transition: width 0.28s ease;
+    }
+    .question { display: flex; flex: 1; flex-direction: column; justify-content: center; }
+    .cat-chip {
+      display: inline-flex;
+      align-items: center;
+      align-self: flex-start;
+      gap: 7px;
+      padding: 5px 9px;
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      color: var(--text);
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+    }
+    .prompt {
+      margin: 11px 0 8px;
+      font-size: clamp(24px, 7.7vw, 31px);
+      font-weight: 820;
+      line-height: 1.12;
+      letter-spacing: -0.03em;
+      overflow-wrap: break-word;
+    }
+    .prompt:focus { outline: none; }
+    .qsub { margin: 0 0 16px; color: var(--muted); font-size: 12px; }
+    .options { display: flex; flex-direction: column; gap: 9px; }
+    .option {
+      display: flex;
+      align-items: center;
+      gap: 11px;
+      width: 100%;
+      min-height: 58px;
+      padding: 9px 13px;
+      border: 1px solid var(--line);
+      border-radius: 15px;
+      background: rgba(255, 255, 255, 0.035);
+      color: var(--text);
+      font: inherit;
+      font-size: 15px;
+      font-weight: 700;
+      text-align: left;
+      cursor: pointer;
+      transition: border-color 0.14s ease, background 0.14s ease, transform 0.14s ease;
+      user-select: none;
+      -webkit-user-select: none;
+    }
+    .option-key {
+      display: grid;
+      flex: none;
+      place-items: center;
+      width: 26px;
+      height: 26px;
+      border-radius: 8px;
+      background: rgba(255, 255, 255, 0.06);
+      color: var(--muted);
+      font-family: var(--mono);
+      font-size: 10px;
+      font-weight: 700;
+    }
+    .option-year {
+      flex: 1;
+      min-width: 0;
+      font-family: var(--mono);
+      font-size: 16px;
+      font-weight: 650;
+      letter-spacing: 0.01em;
+    }
+    .option-mark { margin-left: auto; font-size: 14px; font-weight: 900; }
+    .option:active { transform: scale(0.995); }
+    .option:disabled { cursor: default; opacity: 1; }
+    .option.is-correct { border-color: var(--ok); background: rgba(52, 211, 153, 0.13); color: #d1fae5; }
+    .option.is-correct .option-key { background: var(--ok); color: #052e22; }
+    .option.is-wrong { border-color: var(--bad); background: rgba(251, 113, 133, 0.11); color: #ffe4e6; }
+    .option.is-wrong .option-key { background: var(--bad); color: #3f0715; }
+    .feedback {
+      margin-top: 13px;
+      padding: 13px;
+      border: 1px solid var(--line);
+      border-radius: 16px;
+      background: rgba(255, 255, 255, 0.035);
+      animation: rise 0.2s ease both;
+    }
+    .feedback.ok { border-color: rgba(52, 211, 153, 0.34); background: rgba(52, 211, 153, 0.07); }
+    .feedback.bad { border-color: rgba(251, 113, 133, 0.3); background: rgba(251, 113, 133, 0.06); }
+    .feedback-head { display: flex; align-items: center; gap: 7px; margin-bottom: 5px; }
+    .feedback-head strong { font-size: 12px; letter-spacing: 0.03em; text-transform: uppercase; }
+    .feedback-icon { font-size: 13px; font-weight: 900; }
+    .feedback p { margin: 0; color: var(--muted); font-size: 12px; line-height: 1.5; }
+    .feedback p b { color: var(--text); }
+    .next {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      width: 100%;
+      min-height: 50px;
+      margin-top: 11px;
+      border: 0;
+      border-radius: 13px;
+      background: rgba(255, 255, 255, 0.09);
+      color: var(--text);
+      font: inherit;
+      font-size: 14px;
+      font-weight: 800;
+      cursor: pointer;
+    }
+    .next:active { background: rgba(255, 255, 255, 0.13); }
+    .result { justify-content: center; text-align: center; }
+    .score-big {
+      margin: 8px 0 0;
+      font-family: var(--mono);
+      font-size: clamp(74px, 24vw, 104px);
+      font-weight: 800;
+      line-height: 0.9;
+      letter-spacing: -0.07em;
+    }
+    .score-big small { margin-left: 2px; color: var(--muted); font-size: 0.3em; letter-spacing: 0; }
+    .result h2 { margin: 14px 0 7px; font-size: clamp(25px, 7vw, 32px); font-weight: 850; letter-spacing: -0.035em; }
+    .result-note { max-width: 28ch; margin: 0 auto; color: var(--muted); font-size: 13px; line-height: 1.5; }
+    .record {
+      display: inline-flex;
+      align-self: center;
+      margin-top: 13px;
+      padding: 6px 11px;
+      border: 1px solid rgba(94, 234, 212, 0.4);
+      border-radius: 999px;
+      background: rgba(94, 234, 212, 0.08);
+      color: var(--accent);
+      font-size: 10px;
+      font-weight: 800;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+    }
+    .best-line { margin-top: 13px; color: var(--muted); font-size: 11px; }
+    .best-line b { color: var(--text); font-family: var(--mono); }
+    .actions { display: flex; flex-direction: column; gap: 9px; margin-top: 22px; }
+    .actions .btn.ghost { min-height: 44px; }
+    .option:focus-visible, .btn:focus-visible, .chip:focus-visible, .next:focus-visible {
+      outline: 2px solid var(--accent);
+      outline-offset: 2px;
+    }
+    @keyframes rise {
+      from { opacity: 0; transform: translateY(6px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    @media (max-width: 360px) {
+      .app { padding-left: 14px; padding-right: 14px; }
+      .game, .result { padding: 14px; }
+      .lead { font-size: 13px; }
+      .chip { font-size: 11px; padding: 7px 10px; }
+      .option-year { font-size: 15px; }
+    }
+    @media (min-width: 700px) {
+      .app { max-width: 520px; padding-top: 30px; padding-bottom: 30px; }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+        scroll-behavior: auto !important;
+      }
+    }
+</style>
+</head>
+<body>
+<noscript>
+  <div class="nojs">
+    <div class="nojs-icon" aria-hidden="true">⏳</div>
+    <h1>Нужен JavaScript</h1>
+    <p>Похоже, файл открыт как документ. Telegram не запускает скрипты в просмотрщике файлов.</p>
+    <p><a href="https://teterkin.ru/ugadai-epokhu/">Открыть игру по ссылке →</a></p>
+    <p class="nojs-url">https://teterkin.ru/ugadai-epokhu/</p>
+  </div>
+</noscript>
+<div id="app" class="app"></div>
+
+<script type="application/json" id="quiz-data">
+{
+  "eras": [
+    {"id": "1980-1989", "label": "1980–1989"},
+    {"id": "1990-1999", "label": "1990–1999"},
+    {"id": "2000-2006", "label": "2000–2006"},
+    {"id": "2007-2011", "label": "2007–2011"},
+    {"id": "2012-2021", "label": "2012–2021"},
+    {"id": "2022-2026", "label": "2022–2026"}
+  ],
+  "categories": [
+    {"id": "tech", "label": "Технологии"},
+    {"id": "cinema", "label": "Кино"},
+    {"id": "music", "label": "Музыка"},
+    {"id": "games", "label": "Игры"},
+    {"id": "russia", "label": "Россия и события"}
+  ],
+  "questions": [
+    {
+      "id": "tech-1980-1",
+      "category": "tech",
+      "era": "1980-1989",
+      "prompt": "Таксофоны за 2 копейки, телеграф и первые научные сети передачи данных",
+      "quote": "Проводные АТС, таксофоны (2 коп.), телеграф, первые НИИ-сети (Академсеть).",
+      "source": {"sheet": "Сводная матрица", "cell": "B5"},
+      "note": "Проводная связь и Академсеть — приметы позднего СССР."
+    },
+    {
+      "id": "tech-1980-2",
+      "category": "tech",
+      "era": "1980-1989",
+      "prompt": "Дисковые телефоны ТА-68, кассетники «Электроника» и бытовой ПК БК-0010",
+      "quote": "Дисковые телефоны ТА-68, пейджеры на Олимпиаде-80, кассетники «Электроника», ПК БК-0010.",
+      "source": {"sheet": "Сводная матрица", "cell": "C5"},
+      "note": "ТА-68, «Электроника» и БК-0010 — домашняя техника 1980-х."
+    },
+    {
+      "id": "cinema-1980-1",
+      "category": "cinema",
+      "era": "1980-1989",
+      "prompt": "«Москва слезам не верит», «Кин-дза-дза!», «Асса», «Игла»",
+      "quote": "СССР: «Москва слезам не верит», «Кин-дза-дза!», «Асса», «Игла».",
+      "source": {"sheet": "Сводная матрица", "cell": "H5"},
+      "note": "Культовые советские фильмы 1980-х."
+    },
+    {
+      "id": "cinema-1980-2",
+      "category": "cinema",
+      "era": "1980-1989",
+      "prompt": "«Назад в будущее», «Терминатор», «Чужие»",
+      "quote": "Мир: «Назад в будущее», «Терминатор», «Чужие».",
+      "source": {"sheet": "Сводная матрица", "cell": "H5"},
+      "note": "Голливудские хиты 1980-х."
+    },
+    {
+      "id": "music-1980-1",
+      "category": "music",
+      "era": "1980-1989",
+      "prompt": "«Кино», «Аквариум», «Наутилус», «Ласковый май» и Алла Пугачёва",
+      "quote": "СССР: «Кино», «Аквариум», «Наутилус», «Ласковый май», Алла Пугачёва.",
+      "source": {"sheet": "Сводная матрица", "cell": "I5"},
+      "note": "Русский рок и советская эстрада 1980-х."
+    },
+    {
+      "id": "music-1980-2",
+      "category": "music",
+      "era": "1980-1989",
+      "prompt": "Michael Jackson, Madonna, Queen, Depeche Mode",
+      "quote": "Мир: Michael Jackson, Madonna, Queen, Depeche Mode.",
+      "source": {"sheet": "Сводная матрица", "cell": "I5"},
+      "note": "Западная поп- и рок-сцена 1980-х."
+    },
+    {
+      "id": "games-1980-1",
+      "category": "games",
+      "era": "1980-1989",
+      "prompt": "«Электроника ИМ-02» («Ну, погоди!»), автоматы «Морской бой», ZX Spectrum",
+      "quote": "«Электроника ИМ-02» («Ну, погоди!»), автоматы «Морской бой», Тетрис (1984), ZX Spectrum, Dendy (NES в мире).",
+      "source": {"sheet": "Сводная матрица", "cell": "K5"},
+      "note": "Карманные игры, автоматы и ZX Spectrum — 1980-е."
+    },
+    {
+      "id": "games-1980-2",
+      "category": "games",
+      "era": "1980-1989",
+      "prompt": "Тетрис, придуманный Алексеем Пажитновым",
+      "quote": "изобретение Тетриса А. Пажитновым (1984)",
+      "source": {"sheet": "Кино, музыка, книги, игры", "cell": "E5"},
+      "note": "Тетрис появился в 1984 году."
+    },
+    {
+      "id": "russia-1980-1",
+      "category": "russia",
+      "era": "1980-1989",
+      "prompt": "Олимпиада-80, Афганистан, Перестройка, гласность, Чернобыль",
+      "quote": "Олимпиада-80, Афганистан, смена генсеков, Перестройка (1985), гласность, Чернобыль (1986), вывод войск (1989).",
+      "source": {"sheet": "Сводная матрица", "cell": "F5"},
+      "note": "Ключевые события позднего СССР."
+    },
+    {
+      "id": "russia-1980-2",
+      "category": "russia",
+      "era": "1980-1989",
+      "prompt": "Цеховики, фарцовщики, «хлопковое дело» и «казанский феномен»",
+      "quote": "Цеховики и фарцовщики, «хлопковое дело», «казанский феномен» (молодежные банды), рэкет кооператоров.",
+      "source": {"sheet": "Сводная матрица", "cell": "G5"},
+      "note": "Теневая экономика и молодёжные банды 1980-х."
+    },
+    {
+      "id": "tech-1990-1",
+      "category": "tech",
+      "era": "1990-1999",
+      "prompt": "Dial-Up до 56 Кбит/с, NMT-450, GSM, SMS и WAP",
+      "quote": "Dial-Up (до 56 Кбит/с), 1G (NMT-450) и ранний 2G (GSM, SMS, WAP).",
+      "source": {"sheet": "Сводная матрица", "cell": "B6"},
+      "note": "Домашний интернет и первые мобильные сети 1990-х."
+    },
+    {
+      "id": "tech-1990-2",
+      "category": "tech",
+      "era": "1990-1999",
+      "prompt": "Модемы USRobotics, пейджеры Motorola, Nokia Mobira MD59 и Benefon",
+      "quote": "Модем USRobotics, пейджеры Motorola, Nokia Mobira MD59, MicroTAC, Benefon.",
+      "source": {"sheet": "Сводная матрица", "cell": "C6"},
+      "note": "Аналоговые модемы и первые мобильные телефоны."
+    },
+    {
+      "id": "cinema-1990-1",
+      "category": "cinema",
+      "era": "1990-1999",
+      "prompt": "«Брат», «Утомлённые солнцем», «Особенности национальной охоты»",
+      "quote": "РФ: «Брат», «Утомлённые солнцем», «Особенности нац. охоты».",
+      "source": {"sheet": "Сводная матрица", "cell": "H6"},
+      "note": "Российское кино 1990-х."
+    },
+    {
+      "id": "cinema-1990-2",
+      "category": "cinema",
+      "era": "1990-1999",
+      "prompt": "«Матрица», «Криминальное чтиво», «Бойцовский клуб»",
+      "quote": "Мир: «Матрица», «Криминальное чтиво», «Бойцовский клуб».",
+      "source": {"sheet": "Сводная матрица", "cell": "H6"},
+      "note": "Культовые фильмы рубежа 1990-х."
+    },
+    {
+      "id": "music-1990-1",
+      "category": "music",
+      "era": "1990-1999",
+      "prompt": "«ДДТ», «Сплин», «Мумий Тролль», «Руки Вверх!», «Иванушки»",
+      "quote": "РФ: «ДДТ», «Сплин», «Мумий Тролль», «Руки Вверх!», «Иванушки».",
+      "source": {"sheet": "Сводная матрица", "cell": "I6"},
+      "note": "Российская музыка 1990-х."
+    },
+    {
+      "id": "music-1990-2",
+      "category": "music",
+      "era": "1990-1999",
+      "prompt": "Nirvana, Prodigy, Eminem, Britney Spears",
+      "quote": "Мир: Nirvana, Prodigy, Eminem, Britney Spears.",
+      "source": {"sheet": "Сводная матрица", "cell": "I6"},
+      "note": "Западная музыка 1990-х."
+    },
+    {
+      "id": "games-1990-1",
+      "category": "games",
+      "era": "1990-1999",
+      "prompt": "Dendy, Sega Mega Drive, PlayStation 1 и ПК-клубы",
+      "quote": "Dendy, Sega Mega Drive, PlayStation 1, ПК-клубы: Doom, Quake, Heroes III, Fallout 2, StarCraft.",
+      "source": {"sheet": "Сводная матрица", "cell": "K6"},
+      "note": "Приставки и компьютерные клубы 1990-х."
+    },
+    {
+      "id": "games-1990-2",
+      "category": "games",
+      "era": "1990-1999",
+      "prompt": "Doom, Quake, Heroes III, Fallout 2, StarCraft",
+      "quote": "ПК-клубы: Doom, Quake, Heroes III, Fallout 2, StarCraft.",
+      "source": {"sheet": "Сводная матрица", "cell": "K6"},
+      "note": "Главные игры ПК-клубов 1990-х."
+    },
+    {
+      "id": "russia-1990-1",
+      "category": "russia",
+      "era": "1990-1999",
+      "prompt": "Распад СССР, «шоковая терапия», приватизация, дефолт",
+      "quote": "Распад СССР, «шоковая терапия», приватизация, кризис 1993 г., война в Чечне, дефолт 1998 г.",
+      "source": {"sheet": "Сводная матрица", "cell": "F6"},
+      "note": "Политические и экономические потрясения 1990-х."
+    },
+    {
+      "id": "russia-1990-2",
+      "category": "russia",
+      "era": "1990-1999",
+      "prompt": "ОПГ, «крышевание» рынков, «МММ» и ваучерные аферы",
+      "quote": "ОПГ, «крышевание» рынков, заказные убийства, автоподставы, пирамиды («МММ»), ваучерные аферы.",
+      "source": {"sheet": "Сводная матрица", "cell": "G6"},
+      "note": "Организованная преступность и финансовые пирамиды."
+    },
+    {
+      "id": "tech-2000-1",
+      "category": "tech",
+      "era": "2000-2006",
+      "prompt": "ЖЖ, «Одноклассники», «ВКонтакте», Яндекс.Карты",
+      "quote": "LiveJournal (ЖЖ), Одноклассники и ВКонтакте (2006), Яндекс.Карты, WebMoney.",
+      "source": {"sheet": "Сводная матрица", "cell": "D7"},
+      "note": "Соцсети и сервисы Рунета 2000-х."
+    },
+    {
+      "id": "tech-2000-2",
+      "category": "tech",
+      "era": "2000-2006",
+      "prompt": "Nokia 3310, Siemens SL45, Motorola RAZR V3",
+      "quote": "Nokia 3310, Siemens SL45, Sony Ericsson T68i, Motorola RAZR V3.",
+      "source": {"sheet": "Сводная матрица", "cell": "C7"},
+      "note": "Культовые телефоны 2000-х."
+    },
+    {
+      "id": "cinema-2000-1",
+      "category": "cinema",
+      "era": "2000-2006",
+      "prompt": "«Брат 2», «Бумер», «Ночной дозор», «Остров»",
+      "quote": "РФ: «Брат 2», «Бумер», «Ночной дозор», «Остров».",
+      "source": {"sheet": "Сводная матрица", "cell": "H7"},
+      "note": "Российские хиты 2000-х."
+    },
+    {
+      "id": "cinema-2000-2",
+      "category": "cinema",
+      "era": "2000-2006",
+      "prompt": "«Властелин колец», «Гладиатор», «Гарри Поттер»",
+      "quote": "Мир: «Властелин колец», «Гладиатор», «Гарри Поттер».",
+      "source": {"sheet": "Сводная матрица", "cell": "H7"},
+      "note": "Мировые блокбастеры 2000-х."
+    },
+    {
+      "id": "music-2000-1",
+      "category": "music",
+      "era": "2000-2006",
+      "prompt": "Земфира, «Ленинград», «Звери», «Тату», «Каста»",
+      "quote": "РФ: Земфира, «Ленинград», «Звери», «Тату», «Каста».",
+      "source": {"sheet": "Сводная матрица", "cell": "I7"},
+      "note": "Российская музыка 2000-х."
+    },
+    {
+      "id": "music-2000-2",
+      "category": "music",
+      "era": "2000-2006",
+      "prompt": "Linkin Park, Rammstein, 50 Cent, Coldplay",
+      "quote": "Мир: Linkin Park, Rammstein, 50 Cent, Coldplay.",
+      "source": {"sheet": "Сводная матрица", "cell": "I7"},
+      "note": "Западная музыка 2000-х."
+    },
+    {
+      "id": "games-2000-1",
+      "category": "games",
+      "era": "2000-2006",
+      "prompt": "PlayStation 2, Counter-Strike 1.6, GTA: Vice City / San Andreas",
+      "quote": "PlayStation 2, Counter-Strike 1.6, GTA: Vice City / San Andreas, Warcraft III, Lineage 2, World of Warcraft.",
+      "source": {"sheet": "Сводная матрица", "cell": "K7"},
+      "note": "Эпоха PS2 и компьютерных клубов."
+    },
+    {
+      "id": "games-2000-2",
+      "category": "games",
+      "era": "2000-2006",
+      "prompt": "World of Warcraft, Lineage 2 и Warcraft III",
+      "quote": "Warcraft III, Lineage 2, World of Warcraft.",
+      "source": {"sheet": "Сводная матрица", "cell": "K7"},
+      "note": "Онлайн-игры 2000-х."
+    },
+    {
+      "id": "russia-2000-1",
+      "category": "russia",
+      "era": "2000-2006",
+      "prompt": "Укрепление вертикали власти, нацпроекты, ШОС и ОДКБ",
+      "quote": "Укрепление вертикали власти, завершение активной фазы КТО, рост экономики, нацпроекты, ШОС и ОДКБ.",
+      "source": {"sheet": "Сводная матрица", "cell": "F7"},
+      "note": "Политика и экономика 2000-х."
+    },
+    {
+      "id": "russia-2000-2",
+      "category": "russia",
+      "era": "2000-2006",
+      "prompt": "«Чёрное» рейдерство и первые SMS-аферы «попал в ДТП»",
+      "quote": "Уличная преступность, угоны, квартирные кражи, «черное» рейдерство, первые SMS-аферы («попал в ДТП»).",
+      "source": {"sheet": "Сводная матрица", "cell": "G7"},
+      "note": "Новые схемы мошенничества 2000-х."
+    },
+    {
+      "id": "tech-2007-1",
+      "category": "tech",
+      "era": "2007-2011",
+      "prompt": "«Госуслуги», Avito, «Яндекс.Такси», Skype и RuTracker",
+      "quote": "Госуслуги (2009), Avito (2007), Яндекс.Такси (2011), Skype, торренты (RuTracker).",
+      "source": {"sheet": "Сводная матрица", "cell": "D8"},
+      "note": "Сервисы, изменившие повседневность."
+    },
+    {
+      "id": "tech-2007-2",
+      "category": "tech",
+      "era": "2007-2011",
+      "prompt": "Nokia N95, iPhone 3G / 4, HTC Desire, Galaxy S II",
+      "quote": "Nokia N95, Apple iPhone 3G / 4, HTC Desire, Samsung Galaxy S II.",
+      "source": {"sheet": "Сводная матрица", "cell": "C8"},
+      "note": "Переход к смартфонам."
+    },
+    {
+      "id": "cinema-2007-1",
+      "category": "cinema",
+      "era": "2007-2011",
+      "prompt": "«Груз 200», «Стиляги», «О чём говорят мужчины»",
+      "quote": "РФ: «Груз 200», «Стиляги», «О чём говорят мужчины».",
+      "source": {"sheet": "Сводная матрица", "cell": "H8"},
+      "note": "Российское кино рубежа 2010-х."
+    },
+    {
+      "id": "cinema-2007-2",
+      "category": "cinema",
+      "era": "2007-2011",
+      "prompt": "«Тёмный рыцарь», «Аватар», «Начало», «Социальная сеть»",
+      "quote": "Мир: «Тёмный рыцарь», «Аватар», «Начало», «Социальная сеть».",
+      "source": {"sheet": "Сводная матрица", "cell": "H8"},
+      "note": "Мировые хиты рубежа 2010-х."
+    },
+    {
+      "id": "music-2007-1",
+      "category": "music",
+      "era": "2007-2011",
+      "prompt": "Баста, Noize MC, Гуф, «Градусы», Ёлка",
+      "quote": "РФ: Баста, Noize MC, Гуф, «Градусы», Ёлка.",
+      "source": {"sheet": "Сводная матрица", "cell": "I8"},
+      "note": "Российская музыка рубежа 2010-х."
+    },
+    {
+      "id": "music-2007-2",
+      "category": "music",
+      "era": "2007-2011",
+      "prompt": "Rihanna, Lady Gaga, Kanye West, Adele",
+      "quote": "Мир: Rihanna, Lady Gaga, Kanye West, Adele.",
+      "source": {"sheet": "Сводная матрица", "cell": "I8"},
+      "note": "Западная поп-музыка рубежа 2010-х."
+    },
+    {
+      "id": "games-2007-1",
+      "category": "games",
+      "era": "2007-2011",
+      "prompt": "Xbox 360, PlayStation 3, S.T.A.L.K.E.R., World of Tanks",
+      "quote": "Xbox 360, PlayStation 3, S.T.A.L.K.E.R. (2007), World of Tanks (2010), Dota 2, Minecraft, Skyrim.",
+      "source": {"sheet": "Сводная матрица", "cell": "K8"},
+      "note": "Консоли и онлайн-игры рубежа 2010-х."
+    },
+    {
+      "id": "games-2007-2",
+      "category": "games",
+      "era": "2007-2011",
+      "prompt": "Minecraft, Skyrim и Dota 2",
+      "quote": "Dota 2, Minecraft, Skyrim.",
+      "source": {"sheet": "Сводная матрица", "cell": "K8"},
+      "note": "Культовые игры рубежа 2010-х."
+    },
+    {
+      "id": "russia-2007-1",
+      "category": "russia",
+      "era": "2007-2011",
+      "prompt": "Мюнхенская речь, война в Южной Осетии, мировой кризис и протесты после думских выборов",
+      "quote": "Модернизация при Д. Медведеве, кризис 2008 г., протесты 2011 г. Мюнхенская речь (2007), Южная Осетия (2008).",
+      "source": {"sheet": "Сводная матрица", "cell": "F8"},
+      "note": "Политика и экономика рубежа 2010-х."
+    },
+    {
+      "id": "russia-2007-2",
+      "category": "russia",
+      "era": "2007-2011",
+      "prompt": "Бесконтактные «закладки» через форумы и ICQ, скимминг карт",
+      "quote": "Бесконтактные «закладки» через форумы и ICQ, кредитные аферы, скимминг карт, спад уличных убийств.",
+      "source": {"sheet": "Сводная матрица", "cell": "G8"},
+      "note": "Криминал уходит в интернет."
+    },
+    {
+      "id": "tech-2012-1",
+      "category": "tech",
+      "era": "2012-2021",
+      "prompt": "GPON, оптика в квартиру, 4G и LTE",
+      "quote": "GPON / FTTH оптика в квартиру (до 1 Гбит/с), 4G / LTE (20–150 Мбит/с).",
+      "source": {"sheet": "Сводная матрица", "cell": "B9"},
+      "note": "Быстрый домашний интернет и мобильный 4G."
+    },
+    {
+      "id": "tech-2012-2",
+      "category": "tech",
+      "era": "2012-2021",
+      "prompt": "Telegram, СБП, Wildberries, Ozon, «Яндекс.Еда», Zoom",
+      "quote": "Telegram (2013), Сбербанк Онлайн, СБП (2019), Wildberries, Ozon, Яндекс.Еда, Zoom.",
+      "source": {"sheet": "Сводная матрица", "cell": "D9"},
+      "note": "Цифровые сервисы 2010-х."
+    },
+    {
+      "id": "cinema-2012-1",
+      "category": "cinema",
+      "era": "2012-2021",
+      "prompt": "«Левиафан», «Дурак», «Движение вверх», «Холоп»",
+      "quote": "РФ: «Левиафан», «Дурак», «Движение вверх», «Холоп».",
+      "source": {"sheet": "Сводная матрица", "cell": "H9"},
+      "note": "Российское кино 2010-х."
+    },
+    {
+      "id": "cinema-2012-2",
+      "category": "cinema",
+      "era": "2012-2021",
+      "prompt": "«Интерстеллар», «Паразиты», «Джокер», «Дюна»",
+      "quote": "Мир: «Интерстеллар», «Паразиты», «Джокер», «Дюна».",
+      "source": {"sheet": "Сводная матрица", "cell": "H9"},
+      "note": "Мировое кино 2010-х."
+    },
+    {
+      "id": "music-2012-1",
+      "category": "music",
+      "era": "2012-2021",
+      "prompt": "Скриптонит, Miyagi & Andy Panda, Oxxxymiron, Монеточка, Zivert",
+      "quote": "РФ: Скриптонит, Miyagi & Andy Panda, Oxxxymiron, Монеточка, Zivert.",
+      "source": {"sheet": "Сводная матрица", "cell": "I9"},
+      "note": "Российская музыка 2010-х."
+    },
+    {
+      "id": "music-2012-2",
+      "category": "music",
+      "era": "2012-2021",
+      "prompt": "Drake, Billie Eilish, The Weeknd, Imagine Dragons",
+      "quote": "Мир: Drake, Billie Eilish, The Weeknd, Imagine Dragons.",
+      "source": {"sheet": "Сводная матрица", "cell": "I9"},
+      "note": "Западная музыка 2010-х."
+    },
+    {
+      "id": "games-2012-1",
+      "category": "games",
+      "era": "2012-2021",
+      "prompt": "PS4, «Ведьмак 3», GTA V, CS:GO, PUBG, Fortnite",
+      "quote": "PS4, мобильный бум: Ведьмак 3, GTA V, CS:GO, PUBG, Fortnite, Genshin Impact.",
+      "source": {"sheet": "Сводная матрица", "cell": "K9"},
+      "note": "Консоли, киберспорт и мобильный гейминг."
+    },
+    {
+      "id": "games-2012-2",
+      "category": "games",
+      "era": "2012-2021",
+      "prompt": "Genshin Impact и мобильный бум",
+      "quote": "мобильный бум: Ведьмак 3, GTA V, CS:GO, PUBG, Fortnite, Genshin Impact.",
+      "source": {"sheet": "Сводная матрица", "cell": "K9"},
+      "note": "Мобильные игры становятся массовыми."
+    },
+    {
+      "id": "russia-2012-1",
+      "category": "russia",
+      "era": "2012-2021",
+      "prompt": "Олимпиада в Сочи, Крым, санкции, Сирия, COVID-19",
+      "quote": "Возвращение В. Путина, Олимпиада и Крым (2014), санкции, «поворот на Восток», Сирия, поправки 2020, COVID-19.",
+      "source": {"sheet": "Сводная матрица", "cell": "F9"},
+      "note": "Ключевые события 2010-х."
+    },
+    {
+      "id": "russia-2012-2",
+      "category": "russia",
+      "era": "2012-2021",
+      "prompt": "Колл-центры «службы безопасности банка», фишинг, даркнет, «АУЕ»",
+      "quote": "Колл-центры социальной инженерии («служба безопасности банка»), фишинг, кардинг, даркнет, «АУЕ».",
+      "source": {"sheet": "Сводная матрица", "cell": "G9"},
+      "note": "Расцвет киберпреступности."
+    },
+    {
+      "id": "tech-2022-1",
+      "category": "tech",
+      "era": "2022-2026",
+      "prompt": "GPON / 10G-PON, Wi-Fi 6/7, запуск 5G",
+      "quote": "GPON / 10G-PON, Wi-Fi 6/7, официальный запуск 5G (11.09.2026, до 1,5 Гбит/с).",
+      "source": {"sheet": "Сводная матрица", "cell": "B10"},
+      "note": "Сети нового поколения."
+    },
+    {
+      "id": "tech-2022-2",
+      "category": "tech",
+      "era": "2022-2026",
+      "prompt": "YandexGPT, GigaChat, «Госуслуги»-экосистема и локальные облака",
+      "quote": "Госуслуги-экосистема, МАХ / мессенджеры, нейросети (YandexGPT, GigaChat), локальные облака.",
+      "source": {"sheet": "Сводная матрица", "cell": "D10"},
+      "note": "Нейросети и цифровой суверенитет."
+    },
+    {
+      "id": "cinema-2022-1",
+      "category": "cinema",
+      "era": "2022-2026",
+      "prompt": "«Чебурашка», «Вызов», «Мастер и Маргарита», «Левша»",
+      "quote": "РФ: «Чебурашка» (1–2), «Вызов», «Мастер и Маргарита», «Левша».",
+      "source": {"sheet": "Сводная матрица", "cell": "H10"},
+      "note": "Российские блокбастеры 2020-х."
+    },
+    {
+      "id": "cinema-2022-2",
+      "category": "cinema",
+      "era": "2022-2026",
+      "prompt": "«Оппенгеймер», «Дюна 2», «Одиссея»",
+      "quote": "Мир: «Оппенгеймер», «Дюна 2», «Одиссея».",
+      "source": {"sheet": "Сводная матрица", "cell": "H10"},
+      "note": "Мировые премьеры 2020-х."
+    },
+    {
+      "id": "music-2022-1",
+      "category": "music",
+      "era": "2022-2026",
+      "prompt": "SHAMAN, Macan, Anna Asti, Баста, «Комната культуры»",
+      "quote": "РФ: SHAMAN, Macan, Anna Asti, Баста, «Комната культуры».",
+      "source": {"sheet": "Сводная матрица", "cell": "I10"},
+      "note": "Российская музыка 2020-х."
+    },
+    {
+      "id": "music-2022-2",
+      "category": "music",
+      "era": "2022-2026",
+      "prompt": "Taylor Swift, Sabrina Carpenter, Travis Scott",
+      "quote": "Мир: Taylor Swift, Sabrina Carpenter, Travis Scott.",
+      "source": {"sheet": "Сводная матрица", "cell": "I10"},
+      "note": "Западная музыка 2020-х."
+    },
+    {
+      "id": "games-2022-1",
+      "category": "games",
+      "era": "2022-2026",
+      "prompt": "PS5, Steam Deck, Atomic Heart, «Смута»",
+      "quote": "PS5, Steam Deck: Atomic Heart (2023), Смута, Baldur’s Gate 3, Elden Ring, Black Myth: Wukong.",
+      "source": {"sheet": "Сводная матрица", "cell": "K10"},
+      "note": "Новое поколение консолей и российские AAA-проекты."
+    },
+    {
+      "id": "games-2022-2",
+      "category": "games",
+      "era": "2022-2026",
+      "prompt": "Elden Ring, Baldur’s Gate 3, Black Myth: Wukong",
+      "quote": "Baldur’s Gate 3, Elden Ring, Black Myth: Wukong.",
+      "source": {"sheet": "Сводная матрица", "cell": "K10"},
+      "note": "Мировые хиты 2020-х."
+    },
+    {
+      "id": "russia-2022-1",
+      "category": "russia",
+      "era": "2022-2026",
+      "prompt": "СВО, санкции, перестройка экономики на ОПК, расширение БРИКС",
+      "quote": "СВО (2022), санкции, перестройка экономики на ОПК, импортозамещение, расширение БРИКС, курс на суверенитет.",
+      "source": {"sheet": "Сводная матрица", "cell": "F10"},
+      "note": "Политика и экономика 2020-х."
+    },
+    {
+      "id": "russia-2022-2",
+      "category": "russia",
+      "era": "2022-2026",
+      "prompt": "Дипфейки, дропперы, трансграничные аферы и спад ИТ-хищений",
+      "quote": "Трансграничные аферы (до 40% дел), дипфейки, дропперы, диверсии; с 2026 г. — спад ИТ-хищений (-31,5%) из-за антифрода.",
+      "source": {"sheet": "Сводная матрица", "cell": "G10"},
+      "note": "Криминал 2020-х."
+    }
+  ]
+}
+</script>
+
+<script>
+(function () {
+  'use strict';
+
+  var DATA = JSON.parse(document.getElementById('quiz-data').textContent);
+  var ERAS = DATA.eras;
+  var CATEGORIES = DATA.categories;
+  var QUESTIONS = DATA.questions;
+  var ERA_BY_ID = {};
+  var CATEGORY_BY_ID = {};
+  var ERA_ORDER = {};
+  var CATEGORY_COLORS = {
+    mixed: '#5eead4',
+    tech: '#5eead4',
+    cinema: '#fbbf24',
+    music: '#f472b6',
+    games: '#a3e635',
+    russia: '#60a5fa'
+  };
+  var MODE_LABELS = { mixed: 'Все темы' };
+  var BEST_KEY = 'ugadai-epohu:best:v1';
+  var ROUND_SIZE = 10;
+  var MAX_PER_ERA = 2;
+  var app = document.getElementById('app');
+  var i;
+
+  for (i = 0; i < ERAS.length; i += 1) {
+    ERA_BY_ID[ERAS[i].id] = ERAS[i];
+    ERA_ORDER[ERAS[i].id] = i;
+  }
+  for (i = 0; i < CATEGORIES.length; i += 1) {
+    CATEGORY_BY_ID[CATEGORIES[i].id] = CATEGORIES[i];
+    MODE_LABELS[CATEGORIES[i].id] = CATEGORIES[i].label;
+  }
+
+  var searchParams = new URLSearchParams(window.location.search);
+  var seed = searchParams.get('seed');
+  var random = seed === null ? Math.random : mulberry32(Number(seed) || 1);
+
+  var state = {
+    screen: 'start',
+    mode: 'mixed',
+    deck: [],
+    options: [],
+    index: 0,
+    score: 0,
+    selected: null,
+    locked: false,
+    best: loadBest(),
+    isRecord: false
+  };
+
+  function mulberry32(seedValue) {
+    var value = seedValue;
+    return function () {
+      value |= 0;
+      value = value + 0x6D2B79F5 | 0;
+      var t = Math.imul(value ^ value >>> 15, 1 | value);
+      t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t;
+      return ((t ^ t >>> 14) >>> 0) / 4294967296;
+    };
+  }
+
+  function escapeHtml(value) {
+    return String(value).replace(/[&<>"']/g, function (character) {
+      return {
+        '&': '&amp;',
+        '<': '&lt;',
+        '>': '&gt;',
+        '"': '&quot;',
+        "'": '&#39;'
+      }[character];
+    });
+  }
+
+  function shuffle(items) {
+    var copy = items.slice();
+    var index;
+    var swap;
+    for (index = copy.length - 1; index > 0; index -= 1) {
+      swap = Math.floor(random() * (index + 1));
+      var temporary = copy[index];
+      copy[index] = copy[swap];
+      copy[swap] = temporary;
+    }
+    return copy;
+  }
+
+  function loadBest() {
+    try {
+      var raw = window.localStorage.getItem(BEST_KEY);
+      if (!raw) return {};
+      var parsed = JSON.parse(raw);
+      return parsed && typeof parsed === 'object' ? parsed : {};
+    } catch (error) {
+      return {};
+    }
+  }
+
+  function saveBest(best) {
+    try {
+      window.localStorage.setItem(BEST_KEY, JSON.stringify(best));
+    } catch (error) {
+      return;
+    }
+  }
+
+  function bestFor(mode) {
+    var value = state.best[mode];
+    return typeof value === 'number' ? value + '/10' : '—';
+  }
+
+  function pickDeck(mode) {
+    var picked = [];
+    var eraCounts = {};
+    var pool;
+    var index;
+    var question;
+    var eraCount;
+
+    if (mode === 'mixed') {
+      var byCategory = {};
+      for (index = 0; index < CATEGORIES.length; index += 1) {
+        byCategory[CATEGORIES[index].id] = shuffle(QUESTIONS.filter(function (item) {
+          return item.category === CATEGORIES[index].id;
+        }));
+      }
+      var categoryOrder = shuffle(CATEGORIES.map(function (category) {
+        return category.id;
+      }));
+      for (index = 0; index < categoryOrder.length; index += 1) {
+        var categoryId = categoryOrder[index];
+        var taken = 0;
+        for (var questionIndex = 0; questionIndex < byCategory[categoryId].length; questionIndex += 1) {
+          if (taken >= 2) break;
+          question = byCategory[categoryId][questionIndex];
+          eraCount = eraCounts[question.era] || 0;
+          if (eraCount >= MAX_PER_ERA) continue;
+          picked.push(question);
+          eraCounts[question.era] = eraCount + 1;
+          taken += 1;
+        }
+        if (taken < 2) {
+          for (var backupIndex = 0; backupIndex < byCategory[categoryId].length; backupIndex += 1) {
+            if (taken >= 2) break;
+            question = byCategory[categoryId][backupIndex];
+            if (picked.indexOf(question) !== -1) continue;
+            picked.push(question);
+            eraCounts[question.era] = (eraCounts[question.era] || 0) + 1;
+            taken += 1;
+          }
+        }
+      }
+      return shuffle(picked);
+    }
+
+    pool = shuffle(QUESTIONS.filter(function (item) {
+      return item.category === mode;
+    }));
+    for (index = 0; index < pool.length; index += 1) {
+      question = pool[index];
+      eraCount = eraCounts[question.era] || 0;
+      if (eraCount >= MAX_PER_ERA) continue;
+      picked.push(question);
+      eraCounts[question.era] = eraCount + 1;
+      if (picked.length === ROUND_SIZE) break;
+    }
+    if (picked.length < ROUND_SIZE) {
+      for (index = 0; index < pool.length; index += 1) {
+        if (picked.indexOf(pool[index]) === -1) picked.push(pool[index]);
+        if (picked.length === ROUND_SIZE) break;
+      }
+    }
+    return shuffle(picked);
+  }
+
+  function buildOptions(correctEra) {
+    var pool = [];
+    var index;
+    for (index = 0; index < ERAS.length; index += 1) {
+      if (ERAS[index].id !== correctEra) pool.push(ERAS[index]);
+    }
+    pool = shuffle(pool).slice(0, 3);
+    pool.push(ERA_BY_ID[correctEra]);
+    pool.sort(function (left, right) {
+      return ERA_ORDER[left.id] - ERA_ORDER[right.id];
+    });
+    return pool;
+  }
+
+  function haptic() {
+    try {
+      var webApp = window.Telegram && window.Telegram.WebApp;
+      if (webApp && webApp.HapticFeedback && typeof webApp.HapticFeedback.impactOccurred === 'function') {
+        webApp.HapticFeedback.impactOccurred('light');
+      }
+    } catch (error) {
+      return;
+    }
+  }
+
+  function scrollTop() {
+    try {
+      window.scrollTo(0, 0);
+    } catch (error) {
+      return;
+    }
+  }
+
+  function scrollFeedbackIntoView() {
+    var feedback = document.querySelector('[data-testid="feedback"]');
+    if (!feedback) return;
+    var reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    try {
+      feedback.scrollIntoView({ block: 'nearest', behavior: reduce ? 'auto' : 'smooth' });
+    } catch (error) {
+      feedback.scrollIntoView();
+    }
+  }
+
+  function focusPrompt() {
+    var prompt = document.querySelector('[data-testid="prompt"]');
+    if (!prompt) return;
+    try {
+      prompt.focus({ preventScroll: true });
+    } catch (error) {
+      prompt.focus();
+    }
+  }
+
+  function focusNext() {
+    var nextButton = document.querySelector('[data-testid="next"]');
+    if (!nextButton) return;
+    try {
+      nextButton.focus({ preventScroll: true });
+    } catch (error) {
+      nextButton.focus();
+    }
+  }
+
+  function modeChips() {
+    var modes = [{ id: 'mixed', label: MODE_LABELS.mixed, color: CATEGORY_COLORS.mixed }];
+    for (i = 0; i < CATEGORIES.length; i += 1) {
+      modes.push({
+        id: CATEGORIES[i].id,
+        label: CATEGORIES[i].label,
+        color: CATEGORY_COLORS[CATEGORIES[i].id]
+      });
+    }
+    return modes.map(function (mode) {
+      var active = state.mode === mode.id;
+      return '<button type="button" class="chip' + (active ? ' is-active' : '') + '" data-mode="' + mode.id + '" aria-pressed="' + (active ? 'true' : 'false') + '" style="--accent:' + mode.color + '"><span class="dot"></span>' + escapeHtml(mode.label) + '</button>';
+    }).join('');
+  }
+
+  function optionHtml(era, question, optionIndex) {
+    var isCorrect = era.id === question.era;
+    var isSelected = era.id === state.selected;
+    var classes = 'option';
+    var mark = '';
+
+    if (state.locked) {
+      if (isCorrect) {
+        classes += ' is-correct';
+        mark = '<span class="option-mark" aria-hidden="true">✓</span>';
+      } else if (isSelected) {
+        classes += ' is-wrong';
+        mark = '<span class="option-mark" aria-hidden="true">✕</span>';
+      }
+    }
+
+    return '<button type="button" class="' + classes + '" data-testid="option" data-era="' + era.id + '" data-correct="' + (isCorrect ? 'true' : 'false') + '"' + (state.locked ? ' disabled' : '') + ' aria-label="Эпоха ' + escapeHtml(era.label) + '">' +
+      '<span class="option-key" aria-hidden="true">' + (optionIndex + 1) + '</span>' +
+      '<span class="option-year">' + escapeHtml(era.label) + '</span>' +
+      mark +
+      '</button>';
+  }
+
+  function feedbackHtml(question, isCorrect) {
+    var nextLabel = state.index >= state.deck.length - 1 ? 'Результат' : 'Далее';
+    return '<div class="feedback ' + (isCorrect ? 'ok' : 'bad') + '" data-testid="feedback" data-result="' + (isCorrect ? 'correct' : 'wrong') + '" role="status" aria-live="polite">' +
+      '<div class="feedback-head"><span class="feedback-icon" aria-hidden="true">' + (isCorrect ? '✓' : '✕') + '</span><strong>' + (isCorrect ? 'Верно!' : 'Не эта эпоха') + '</strong></div>' +
+      '<p><b>' + escapeHtml(ERA_BY_ID[question.era].label) + '</b> · ' + escapeHtml(question.note) + '</p>' +
+      '<button class="next" type="button" data-testid="next">' + nextLabel + ' <span aria-hidden="true">→</span></button>' +
+      '</div>';
+  }
+
+  function renderStart() {
+    var best = bestFor(state.mode);
+    app.innerHTML =
+      '<header class="topbar">' +
+        '<div class="brand"><span class="brand-icon" aria-hidden="true">⏳</span><span>Угадай эпоху!</span></div>' +
+        '<div class="best-pill">Лучший <b data-testid="best-start">' + escapeHtml(best) + '</b></div>' +
+      '</header>' +
+      '<main class="start">' +
+        '<div class="hero">' +
+          '<p class="kicker">1980–2026 · 5 тем · 6 эпох</p>' +
+          '<h1>Угадай<br><span class="grad">эпоху!</span></h1>' +
+          '<p class="lead">Технологии, кино, музыка, игры и события России. 10 вопросов, 4 варианта — и пояснение после каждого ответа.</p>' +
+        '</div>' +
+        '<div class="timeline" aria-hidden="true"><span>1980</span><span>1990</span><span>2000</span><span>2007</span><span>2012</span><span>2022</span></div>' +
+        '<div class="modes" role="group" aria-label="Выберите тему">' + modeChips() + '</div>' +
+        '<button class="btn" type="button" data-testid="start">Начать <span aria-hidden="true">→</span></button>' +
+        '<p class="hint">10 вопросов · без регистрации · работает в Telegram</p>' +
+      '</main>' +
+      '<footer class="foot">По мотивам «Энциклопедии эпох» 1980–2026</footer>';
+  }
+
+  function renderQuestion() {
+    var question = state.deck[state.index];
+    if (!question) {
+      state.screen = 'start';
+      renderStart();
+      return;
+    }
+    var category = CATEGORY_BY_ID[question.category];
+    var options = state.options.length ? state.options : buildOptions(question.era);
+    var feedback = state.locked ? feedbackHtml(question, state.selected === question.era) : '';
+
+    app.innerHTML =
+      '<header class="topbar">' +
+        '<div class="brand"><span class="brand-icon" aria-hidden="true">⏳</span><span>Угадай эпоху!</span></div>' +
+        '<div class="score-pill">Счёт <b data-testid="score-value">' + state.score + '</b></div>' +
+      '</header>' +
+      '<main class="game" data-testid="question" data-category="' + question.category + '" data-era="' + question.era + '">' +
+        '<div class="game-head">' +
+          '<span class="qcount" data-testid="progress-text">Вопрос ' + (state.index + 1) + ' / ' + state.deck.length + '</span>' +
+        '</div>' +
+        '<div class="progress" role="progressbar" aria-label="Прогресс" aria-valuemin="1" aria-valuemax="' + state.deck.length + '" aria-valuenow="' + (state.index + 1) + '" data-testid="progress"><span style="width:' + ((state.index + 1) / state.deck.length * 100) + '%"></span></div>' +
+        '<section class="question">' +
+          '<span class="cat-chip" style="--accent:' + CATEGORY_COLORS[question.category] + '"><span class="dot"></span>' + escapeHtml(category.label) + '</span>' +
+          '<h2 class="prompt" data-testid="prompt" tabindex="-1">' + escapeHtml(question.prompt) + '</h2>' +
+          '<p class="qsub">К какой эпохе это относится?</p>' +
+          '<div class="options">' + options.map(function (era, optionIndex) { return optionHtml(era, question, optionIndex); }).join('') + '</div>' +
+          feedback +
+        '</section>' +
+      '</main>' +
+      '<footer class="foot">Выберите один вариант — после ответа появится пояснение.</footer>';
+  }
+
+  function tierFor(score) {
+    if (score === 10) return { title: 'Машина времени', note: 'Идеально: все эпохи на месте.' };
+    if (score >= 8) return { title: 'Знаток эпох', note: 'Почти без промахов.' };
+    if (score >= 6) return { title: 'Уверенный современник', note: 'Хорошая ориентация во времени.' };
+    if (score >= 4) return { title: 'Турист во времени', note: 'Есть что вспомнить.' };
+    return { title: 'Путешественник без карты', note: 'Эпохи ещё можно наверстать.' };
+  }
+
+  function buildShare(score) {
+    if (!/^https?:$/.test(window.location.protocol)) return null;
+    var base = window.location.origin + window.location.pathname;
+    var modeText = state.mode === 'mixed' ? '' : ' Тема: «' + MODE_LABELS[state.mode] + '».';
+    var text = 'Мой результат в «Угадай эпоху!»: ' + score + '/10.' + modeText + ' А ты?';
+    return 'https://t.me/share/url?url=' + encodeURIComponent(base) + '&text=' + encodeURIComponent(text);
+  }
+
+  function renderResult() {
+    var tier = tierFor(state.score);
+    var best = bestFor(state.mode);
+    var modeLabel = MODE_LABELS[state.mode];
+    var share = buildShare(state.score);
+    var bestLine = best === '—' ? 'Это твой первый результат' : 'Лучший результат: <b>' + escapeHtml(best) + '</b>';
+
+    app.innerHTML =
+      '<header class="topbar">' +
+        '<div class="brand"><span class="brand-icon" aria-hidden="true">⏳</span><span>Угадай эпоху!</span></div>' +
+        '<div class="best-pill">Лучший <b>' + escapeHtml(best) + '</b></div>' +
+      '</header>' +
+      '<main class="result" data-testid="result">' +
+        '<p class="kicker">' + escapeHtml(modeLabel) + ' · результат</p>' +
+        '<div class="score-big"><span data-testid="score">' + state.score + '</span><small>/10</small></div>' +
+        '<h2 data-testid="tier">' + escapeHtml(tier.title) + '</h2>' +
+        '<p class="result-note">' + escapeHtml(tier.note) + '</p>' +
+        (state.isRecord && state.score > 0 ? '<div class="record">Новый рекорд!</div>' : '') +
+        '<div class="best-line">' + bestLine + '</div>' +
+        '<div class="actions">' +
+          (share ? '<a class="btn" data-testid="share" href="' + escapeHtml(share) + '" target="_blank" rel="noopener noreferrer">Поделиться <span aria-hidden="true">↗</span></a>' : '') +
+          '<button class="btn secondary" type="button" data-testid="restart">Ещё раз</button>' +
+          '<button class="btn ghost" type="button" data-testid="change-mode">Сменить тему</button>' +
+        '</div>' +
+      '</main>' +
+      '<footer class="foot">Спасибо за игру. Эпохи не заканчиваются.</footer>';
+  }
+
+  function render() {
+    if (state.screen === 'start') {
+      renderStart();
+    } else if (state.screen === 'question') {
+      renderQuestion();
+    } else {
+      renderResult();
+    }
+  }
+
+  function startGame() {
+    state.deck = pickDeck(state.mode);
+    state.options = buildOptions(state.deck[0].era);
+    state.index = 0;
+    state.score = 0;
+    state.selected = null;
+    state.locked = false;
+    state.isRecord = false;
+    state.screen = 'question';
+    renderQuestion();
+    scrollTop();
+    focusPrompt();
+  }
+
+  function answer(eraId) {
+    if (state.locked || state.screen !== 'question') return;
+    var question = state.deck[state.index];
+    if (!question) return;
+    state.locked = true;
+    state.selected = eraId;
+    if (eraId === question.era) state.score += 1;
+    haptic();
+    renderQuestion();
+    scrollFeedbackIntoView();
+    focusNext();
+  }
+
+  function nextQuestion() {
+    if (!state.locked) return;
+    if (state.index >= state.deck.length - 1) {
+      finishRound();
+      return;
+    }
+    state.index += 1;
+    state.options = buildOptions(state.deck[state.index].era);
+    state.locked = false;
+    state.selected = null;
+    renderQuestion();
+    scrollTop();
+    focusPrompt();
+  }
+
+  function finishRound() {
+    var previous = typeof state.best[state.mode] === 'number' ? state.best[state.mode] : -1;
+    state.isRecord = state.score > previous && state.score > 0;
+    if (state.score > previous) {
+      state.best[state.mode] = state.score;
+      saveBest(state.best);
+    }
+    state.screen = 'result';
+    renderResult();
+    scrollTop();
+  }
+
+  function setMode(mode) {
+    if (!MODE_LABELS[mode]) return;
+    state.mode = mode;
+    state.screen = 'start';
+    renderStart();
+    scrollTop();
+  }
+
+  function goToStart() {
+    state.screen = 'start';
+    renderStart();
+    scrollTop();
+  }
+
+  app.addEventListener('click', function (event) {
+    var target = event.target;
+    if (!target || !target.closest) return;
+
+    var modeButton = target.closest('[data-mode]');
+    if (modeButton && state.screen === 'start') {
+      setMode(modeButton.getAttribute('data-mode'));
+      return;
+    }
+
+    var startButton = target.closest('[data-testid="start"]');
+    if (startButton) {
+      startGame();
+      return;
+    }
+
+    var option = target.closest('[data-testid="option"]');
+    if (option) {
+      answer(option.getAttribute('data-era'));
+      return;
+    }
+
+    var nextButton = target.closest('[data-testid="next"]');
+    if (nextButton) {
+      nextQuestion();
+      return;
+    }
+
+    var restart = target.closest('[data-testid="restart"]');
+    if (restart) {
+      startGame();
+      return;
+    }
+
+    var changeMode = target.closest('[data-testid="change-mode"]');
+    if (changeMode) {
+      goToStart();
+    }
+  });
+
+  document.addEventListener('keydown', function (event) {
+    if (state.screen !== 'question') return;
+
+    if (!state.locked && /^[1-4]$/.test(event.key)) {
+      var options = app.querySelectorAll('[data-testid="option"]');
+      var option = options[Number(event.key) - 1];
+      if (option) {
+        event.preventDefault();
+        option.click();
+      }
+      return;
+    }
+
+    if (state.locked && (event.key === 'Enter' || event.key === ' ')) {
+      var nextButton = app.querySelector('[data-testid="next"]');
+      if (nextButton) {
+        event.preventDefault();
+        nextButton.click();
+      }
+    }
+  });
+
+  try {
+    var webApp = window.Telegram && window.Telegram.WebApp;
+    if (webApp) {
+      if (typeof webApp.ready === 'function') webApp.ready();
+      if (typeof webApp.expand === 'function') webApp.expand();
+    }
+  } catch (error) {
+    void error;
+  }
+
+  render();
+})();
+</script>
+</body>
+</html>

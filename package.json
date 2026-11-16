@@ -1,0 +1,16 @@
+{
+  "name": "ugaday-epohu",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Интерактивная викторина «Угадай эпоху!» про Россию 1980–2026",
+  "license": "MIT",
+  "scripts": {
+    "start": "python3 -m http.server 8000",
+    "test": "python3 tests/validate_bank.py && ./tests/run_e2e.sh",
+    "test:bank": "python3 tests/validate_bank.py",
+    "test:e2e": "./tests/run_e2e.sh"
+  },
+  "devDependencies": {
+    "playwright": "1.65.1"
+  }
+}
