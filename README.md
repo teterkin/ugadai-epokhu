@@ -34,7 +34,7 @@ npm test
 
 ```text
 PASS: 60 questions, 5 categories x 6 eras x 2, all quotes and source rows match the workbook
-E2E: PASS 289
+E2E: PASS 291
 ```
 
 Отдельно:

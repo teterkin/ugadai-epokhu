@@ -1419,7 +1419,7 @@
     if (!/^https?:$/.test(window.location.protocol)) return null;
     var base = window.location.origin + window.location.pathname;
     var modeText = state.mode === 'mixed' ? '' : ' Тема: «' + MODE_LABELS[state.mode] + '».';
-    var text = 'Мой результат в «Угадай эпоху!»: ' + score + '/10.' + modeText + ' А ты?';
+    var text = 'Мой результат в «Угадай эпоху!»: ' + score + '/10.' + modeText + ' А чего добился ты? 😁';
     return 'https://t.me/share/url?url=' + encodeURIComponent(base) + '&text=' + encodeURIComponent(text);
   }
 

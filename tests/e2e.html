@@ -174,8 +174,13 @@
     }
     assert(one(doc3, '[data-testid="score"]').textContent.trim() === '10',
       'cinema round finishes with 10/10');
-    assert(one(doc3, '[data-testid="share"]').getAttribute('href').indexOf('https://t.me/share/url?') === 0,
-      'share link points to Telegram');
+    var shareHref = one(doc3, '[data-testid="share"]').getAttribute('href');
+    assert(shareHref.indexOf('https://t.me/share/url?') === 0, 'share link points to Telegram');
+    var shareText = decodeURIComponent(shareHref.split('text=')[1] || '');
+    assert(shareText.indexOf('Мой результат в «Угадай эпоху!»: 10/10.') === 0,
+      'share text starts with the result');
+    assert(shareText.indexOf('А чего добился ты? 😁') !== -1,
+      'share text contains the challenge');
     click(one(doc3, '[data-testid="change-mode"]'));
     assert(one(doc3, '[data-testid="start"]'), 'change topic returns to the start screen');
 
